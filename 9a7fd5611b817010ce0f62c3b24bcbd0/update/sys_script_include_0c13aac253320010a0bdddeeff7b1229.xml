@@ -23,6 +23,7 @@ AWAStatsUtils.prototype = {
     },
 
     getAgents: function () {
+		//demo comments
         var agents = {};
         // Get agents
         var agg = new GlideAggregate('awa_agent_presence');
@@ -408,15 +409,15 @@ AWAStatsUtils.prototype = {
         <sys_created_on>2020-02-07 20:51:34</sys_created_on>
         <sys_customer_update>false</sys_customer_update>
         <sys_id>0c13aac253320010a0bdddeeff7b1229</sys_id>
-        <sys_mod_count>169</sys_mod_count>
+        <sys_mod_count>170</sys_mod_count>
         <sys_name>AWAStatsUtils</sys_name>
         <sys_package display_value="Advanced Work Assignment" source="com.glide.awa">0e51221b4f103300908b81c18110c73d</sys_package>
         <sys_policy/>
         <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
         <sys_scope display_value="QuebecGlobal">9a7fd5611b817010ce0f62c3b24bcbd0</sys_scope>
         <sys_update_name>sys_script_include_0c13aac253320010a0bdddeeff7b1229</sys_update_name>
-        <sys_updated_by>andrew.barnes@snc</sys_updated_by>
-        <sys_updated_on>2021-06-29 15:26:46</sys_updated_on>
+        <sys_updated_by>andrew.barnes</sys_updated_by>
+        <sys_updated_on>2021-06-29 18:11:13</sys_updated_on>
     </sys_script_include>
     <sys_claim action="INSERT_OR_UPDATE">
         <claim_owner_scope display_value="QuebecGlobal">9a7fd5611b817010ce0f62c3b24bcbd0</claim_owner_scope>
