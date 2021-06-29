@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_script">
+    <sys_script action="INSERT_OR_UPDATE">
+        <abort_action>false</abort_action>
+        <access>package_private</access>
+        <action_delete>false</action_delete>
+        <action_insert>true</action_insert>
+        <action_query>false</action_query>
+        <action_update>true</action_update>
+        <active>false</active>
+        <add_message>false</add_message>
+        <advanced>true</advanced>
+        <change_fields>false</change_fields>
+        <client_callable>false</client_callable>
+        <collection>problem</collection>
+        <condition>current.isValidRecord()</condition>
+        <description/>
+        <execute_function>false</execute_function>
+        <filter_condition/>
+        <is_rest>false</is_rest>
+        <message/>
+        <name>SNC - ITIL - Close Related</name>
+        <order>999</order>
+        <priority/>
+        <rest_method/>
+        <rest_method_text/>
+        <rest_service/>
+        <rest_service_text/>
+        <rest_variables/>
+        <role_conditions/>
+        <script><![CDATA[if (current.problem_state.changesTo(4)) {
+   closeRelatedIncidents(current);
+   closeRelatedTasks(current);
+}
+
+// 
+// Close any incidents that are related to the current problem
+//
+function closeRelatedIncidents(me) {
+  var incident = new GlideRecord("incident");
+  incident.addQuery("problem_id", "=", me.sys_id);
+  incident.query();
+  while (incident.next()) {
+    if ( incident.active == true ){
+      var msg = gs.getMessage("Incident {0} closed based on closure of problem {1}", [incident.number, me.number]);
+      gs.print(msg);
+      incident.incident_state.setValue(IncidentState.CLOSED);
+      incident.active.setValue(false);
+      incident.comments = msg;
+      incident.update(); 
+    }
+  }
+}]]></script>
+        <sys_class_name>sys_script</sys_class_name>
+        <sys_created_by>glide.maint</sys_created_by>
+        <sys_created_on>2006-01-30 16:29:58</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>1c263220c6112275006955271bf6ba4f</sys_id>
+        <sys_mod_count>10</sys_mod_count>
+        <sys_name>SNC - ITIL - Close Related</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="Best Practice - Incident Resolution Workflow" source="com.snc.bestpractice.incident">5e61ffb6db311200b315f27eaf96199e</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="QuebecGlobal">9a7fd5611b817010ce0f62c3b24bcbd0</sys_scope>
+        <sys_update_name>sys_script_1c263220c6112275006955271bf6ba4f</sys_update_name>
+        <sys_updated_by>andrew.barnes@snc</sys_updated_by>
+        <sys_updated_on>2021-06-29 15:25:14</sys_updated_on>
+        <template/>
+        <when>after</when>
+    </sys_script>
+    <sys_translated_text action="delete_multiple" query="documentkey=1c263220c6112275006955271bf6ba4f"/>
+    <sys_claim action="INSERT_OR_UPDATE">
+        <claim_owner_scope display_value="QuebecGlobal">9a7fd5611b817010ce0f62c3b24bcbd0</claim_owner_scope>
+        <claim_timestamp>17a585fda030000002</claim_timestamp>
+        <metadata_update_name>sys_script_1c263220c6112275006955271bf6ba4f</metadata_update_name>
+        <previous_claim_app_version>1.0.0</previous_claim_app_version>
+        <previous_claim_name>QuebecGlobal</previous_claim_name>
+        <previous_claim_scope>9a7fd5611b817010ce0f62c3b24bcbd0</previous_claim_scope>
+        <sys_created_by>andrew.barnes@snc</sys_created_by>
+        <sys_created_on>2021-06-29 15:25:14</sys_created_on>
+        <sys_id>5f00e5a11b817010ce0f62c3b24bcb10</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>andrew.barnes@snc</sys_updated_by>
+        <sys_updated_on>2021-06-29 15:25:14</sys_updated_on>
+    </sys_claim>
+    <sys_claim action="INSERT_OR_UPDATE">
+        <claim_owner_scope display_value="QuebecGlobal">9a7fd5611b817010ce0f62c3b24bcbd0</claim_owner_scope>
+        <claim_timestamp>17a585fda030000001</claim_timestamp>
+        <metadata_update_name>sys_script_1c263220c6112275006955271bf6ba4f</metadata_update_name>
+        <previous_claim_app_version/>
+        <previous_claim_name>com.snc.bestpractice.incident</previous_claim_name>
+        <previous_claim_scope>com.snc.bestpractice.incident</previous_claim_scope>
+        <sys_created_by>andrew.barnes@snc</sys_created_by>
+        <sys_created_on>2021-06-29 15:25:14</sys_created_on>
+        <sys_id>1700e5a11b817010ce0f62c3b24bcb11</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>andrew.barnes@snc</sys_updated_by>
+        <sys_updated_on>2021-06-29 15:25:14</sys_updated_on>
+    </sys_claim>
+</record_update>

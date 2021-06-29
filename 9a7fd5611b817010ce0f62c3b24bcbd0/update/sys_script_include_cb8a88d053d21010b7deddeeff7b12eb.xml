@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>public</access>
+        <active>true</active>
+        <api_name>global.ProcessSyncUtils</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description>Utility functions for Process Sync Scripted Rest API</description>
+        <name>ProcessSyncUtils</name>
+        <script><![CDATA[var ProcessSyncUtils = Class.create();
+	ProcessSyncUtils.IH_SYNC_REMOTE_SYSTEM = "ih_sync_remote_system";
+    ProcessSyncUtils.INBOUND_USER = "inbound_api_user";
+    ProcessSyncUtils.EXTERNAL_ID = "external_id";
+    ProcessSyncUtils.INBOUND_STATE = "inbound_state";
+ProcessSyncUtils.prototype = {
+    initialize: function() {},
+
+validateRequestHeaders: function( /*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
+		var missingHeadersStr = null, i; 
+		var mandatoryHeaders = ["local-object", "process-event", "remote-system", "operation"];
+		for(i=0; i<mandatoryHeaders.length; i++){
+			var headerVal = request.getHeader(mandatoryHeaders[i]);
+			if(gs.nil(headerVal)){
+				if(missingHeadersStr == null){
+					missingHeadersStr = mandatoryHeaders[i];
+				} else {
+					missingHeadersStr = missingHeadersStr + ", " + mandatoryHeaders[i];
+				}
+			}
+		}
+		if(missingHeadersStr != null){
+			response.setError(new sn_ws_err.BadRequestError('Request missing mandatory headers: ' + missingHeadersStr)); 
+			return false;
+		}
+
+		var operation = request.getHeader("operation").toLowerCase();
+        if (!(operation === "create" ||
+                operation === "update" ||
+                operation ==="delete")) {
+            response.setError(new sn_ws_err.BadRequestError('operation header valid values are create/update/delete'));
+            return false;
+        }
+        return true;
+    },
+    
+    validateRequestParams: function( /*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
+        var missingParamsStr, 
+			mandatoryParams = ["remote_system", "correlation_id"],
+			params = request.queryParams;
+        for (var i = 0; i < mandatoryParams.length; i++) {
+            var paramVal = params[mandatoryParams[i]];
+            if (gs.nil(paramVal)) {
+                if (missingParamsStr) {
+                    missingParamsStr = missingParamsStr + ", " + mandatoryParams[i];
+                } else {
+                    missingParamsStr = mandatoryParams[i];
+                }
+            }
+        }
+        if (missingParamsStr) {
+            response.setError(new sn_ws_err.BadRequestError('Request missing mandatory params: ' + missingParamsStr));
+            return false;
+        }
+
+        var remoteSystemExtId = params["remote_system"];
+        if (!gs.nil(remoteSystemExtId)) {
+            var remoteSystemId = this.getRemoteSystemId(remoteSystemExtId, response);
+            if (gs.nil(remoteSystemId)) {
+                return false;
+            }
+        }
+        return true;
+    },
+	
+    <!-- Get remote system sys id by checking external id, inbound state as active and inbound user as system user -->
+	getRemoteSystemId: function(/*String*/ remoteSystem, /*RESTAPIResponse*/ response){
+		var remoteSystemGR = new GlideRecord(ProcessSyncUtils.IH_SYNC_REMOTE_SYSTEM);
+		remoteSystemGR.addQuery(ProcessSyncUtils.EXTERNAL_ID, remoteSystem);
+		remoteSystemGR.addQuery(ProcessSyncUtils.INBOUND_STATE, "!=",  "disabled");
+		remoteSystemGR.query();
+		if(remoteSystemGR.hasNext()){
+			remoteSystemGR.next();
+			if(remoteSystemGR.getValue(ProcessSyncUtils.INBOUND_USER) === gs.getUserID())
+				return remoteSystemGR.getValue("sys_id");
+			else {
+				response.setStatus(401);
+				response.setError(new sn_ws_err.BadRequestError('API caller does not match with remote system user'));
+            		return null;
+			}
+		}
+		response.setStatus(400);
+		response.setError(new sn_ws_err.BadRequestError('No active remote system found'));
+		return null;
+	},
+		
+    type: 'ProcessSyncUtils'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2020-07-24 23:05:24</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>cb8a88d053d21010b7deddeeff7b12eb</sys_id>
+        <sys_mod_count>78</sys_mod_count>
+        <sys_name>ProcessSyncUtils</sys_name>
+        <sys_package display_value="IntegrationHub Remote Process Sync Framework Data Model" source="com.glide.hub.process.sync.model">f949c6c4db1220107927623b4b9619c0</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="QuebecGlobal">9a7fd5611b817010ce0f62c3b24bcbd0</sys_scope>
+        <sys_update_name>sys_script_include_cb8a88d053d21010b7deddeeff7b12eb</sys_update_name>
+        <sys_updated_by>andrew.barnes@snc</sys_updated_by>
+        <sys_updated_on>2021-06-29 15:26:46</sys_updated_on>
+    </sys_script_include>
+    <sys_claim action="INSERT_OR_UPDATE">
+        <claim_owner_scope display_value="QuebecGlobal">9a7fd5611b817010ce0f62c3b24bcbd0</claim_owner_scope>
+        <claim_timestamp>17a58613ee20000001</claim_timestamp>
+        <metadata_update_name>sys_script_include_cb8a88d053d21010b7deddeeff7b12eb</metadata_update_name>
+        <previous_claim_app_version>1.0.0</previous_claim_app_version>
+        <previous_claim_name>QuebecGlobal</previous_claim_name>
+        <previous_claim_scope>9a7fd5611b817010ce0f62c3b24bcbd0</previous_claim_scope>
+        <sys_created_by>andrew.barnes@snc</sys_created_by>
+        <sys_created_on>2021-06-29 15:26:45</sys_created_on>
+        <sys_id>a56069a11b817010ce0f62c3b24bcb4f</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>andrew.barnes@snc</sys_updated_by>
+        <sys_updated_on>2021-06-29 15:26:45</sys_updated_on>
+    </sys_claim>
+    <sys_claim action="INSERT_OR_UPDATE">
+        <claim_owner_scope display_value="QuebecGlobal">9a7fd5611b817010ce0f62c3b24bcbd0</claim_owner_scope>
+        <claim_timestamp>17a58613ee10000001</claim_timestamp>
+        <metadata_update_name>sys_script_include_cb8a88d053d21010b7deddeeff7b12eb</metadata_update_name>
+        <previous_claim_app_version/>
+        <previous_claim_name>com.glide.hub.process.sync.model</previous_claim_name>
+        <previous_claim_scope>com.glide.hub.process.sync.model</previous_claim_scope>
+        <sys_created_by>andrew.barnes@snc</sys_created_by>
+        <sys_created_on>2021-06-29 15:26:46</sys_created_on>
+        <sys_id>6d6069a11b817010ce0f62c3b24bcb4f</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>andrew.barnes@snc</sys_updated_by>
+        <sys_updated_on>2021-06-29 15:26:46</sys_updated_on>
+    </sys_claim>
+</record_update>

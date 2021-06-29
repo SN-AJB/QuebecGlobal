@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_script">
+    <sys_script action="INSERT_OR_UPDATE">
+        <abort_action>false</abort_action>
+        <access>package_private</access>
+        <action_delete>false</action_delete>
+        <action_insert>true</action_insert>
+        <action_query>false</action_query>
+        <action_update>true</action_update>
+        <active>true</active>
+        <add_message>false</add_message>
+        <advanced>true</advanced>
+        <change_fields>false</change_fields>
+        <client_callable>false</client_callable>
+        <collection>problem</collection>
+        <condition>current.problem_state.changesTo(4) &amp;&amp; current.knowledge == true</condition>
+        <description/>
+        <execute_function>false</execute_function>
+        <filter_condition/>
+        <is_rest>false</is_rest>
+        <message/>
+        <name>Problem Create Knowledge</name>
+        <order>100</order>
+        <priority/>
+        <rest_method/>
+        <rest_method_text/>
+        <rest_service/>
+        <rest_service_text/>
+        <rest_variables/>
+        <role_conditions/>
+        <script><![CDATA[if (gs.getProperty('glide.knowman.submission.workflow') == 'true')
+    submitCandidate();
+else
+    submitDirect();
+
+function submitDirect() {
+    var kb = new GlideRecord("kb_knowledge");
+    kb.source = current.sys_id;
+    kb.short_description = current.short_description;
+    kb.sys_domain = current.sys_domain;
+    kb.text = current.work_notes.getHTMLValue();
+    kb.workflow_state = 'draft';
+	kb.kb_knowledge_base = gs.getProperty("glide.knowman.task_kb", "dfc19531bf2021003f07e2c1ac0739ab");
+    var kb_id = kb.insert();
+	if(kb_id)
+		gs.addInfoMessage(gs.getMessage('Knowledge Article created: {0}', kb.number));
+}
+
+function submitCandidate() {
+    var gr = new GlideRecord('kb_submission');
+    gr.parent = current.sys_id;
+    gr.short_description = current.short_description;
+    gr.sys_domain = current.sys_domain;
+    gr.text = current.work_notes.getHTMLValue();
+    var gr_id = gr.insert();
+	if(gr_id)
+		gs.addInfoMessage(gs.getMessage('Knowledge Submission created: {0}', gr.number));
+}]]></script>
+        <sys_class_name>sys_script</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2014-12-22 21:19:48</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>877c97b80a0a3c740147ca0a46126576</sys_id>
+        <sys_mod_count>3</sys_mod_count>
+        <sys_name>Problem Create Knowledge</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="Upgrade content for 2011 - activated only for new instances" source="upgrade.2011_common_practice">ece1fbf6db311200b315f27eaf9619f2</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="QuebecGlobal">9a7fd5611b817010ce0f62c3b24bcbd0</sys_scope>
+        <sys_update_name>sys_script_877c97b80a0a3c740147ca0a46126576</sys_update_name>
+        <sys_updated_by>andrew.barnes@snc</sys_updated_by>
+        <sys_updated_on>2021-06-29 15:24:51</sys_updated_on>
+        <template/>
+        <when>after</when>
+    </sys_script>
+    <sys_translated_text action="delete_multiple" query="documentkey=877c97b80a0a3c740147ca0a46126576"/>
+    <sys_claim action="INSERT_OR_UPDATE">
+        <claim_owner_scope display_value="QuebecGlobal">9a7fd5611b817010ce0f62c3b24bcbd0</claim_owner_scope>
+        <claim_timestamp>17a585f7eca0000001</claim_timestamp>
+        <metadata_update_name>sys_script_877c97b80a0a3c740147ca0a46126576</metadata_update_name>
+        <previous_claim_app_version>1.0.0</previous_claim_app_version>
+        <previous_claim_name>QuebecGlobal</previous_claim_name>
+        <previous_claim_scope>9a7fd5611b817010ce0f62c3b24bcbd0</previous_claim_scope>
+        <sys_created_by>andrew.barnes@snc</sys_created_by>
+        <sys_created_on>2021-06-29 15:24:51</sys_created_on>
+        <sys_id>a9ff91a11b817010ce0f62c3b24bcbc6</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>andrew.barnes@snc</sys_updated_by>
+        <sys_updated_on>2021-06-29 15:24:51</sys_updated_on>
+    </sys_claim>
+    <sys_claim action="INSERT_OR_UPDATE">
+        <claim_owner_scope display_value="QuebecGlobal">9a7fd5611b817010ce0f62c3b24bcbd0</claim_owner_scope>
+        <claim_timestamp>17a585f7ebd0000001</claim_timestamp>
+        <metadata_update_name>sys_script_877c97b80a0a3c740147ca0a46126576</metadata_update_name>
+        <previous_claim_app_version/>
+        <previous_claim_name>upgrade.2011_common_practice</previous_claim_name>
+        <previous_claim_scope>upgrade.2011_common_practice</previous_claim_scope>
+        <sys_created_by>andrew.barnes@snc</sys_created_by>
+        <sys_created_on>2021-06-29 15:24:51</sys_created_on>
+        <sys_id>e1ff91a11b817010ce0f62c3b24bcbc7</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>andrew.barnes@snc</sys_updated_by>
+        <sys_updated_on>2021-06-29 15:24:51</sys_updated_on>
+    </sys_claim>
+</record_update>

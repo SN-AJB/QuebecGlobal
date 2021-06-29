@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>global.DateTimeUtils</api_name>
+        <caller_access/>
+        <client_callable>true</client_callable>
+        <description>Wrapper to make common date time functions easier.</description>
+        <name>DateTimeUtils</name>
+        <script><![CDATA[var DateTimeUtils = Class.create();
+
+DateTimeUtils.prototype = Object.extendsObject(AbstractAjaxProcessor, {
+
+    /**
+     * Convert Microsoft AD integer8 DateTime format to GlideDateTime
+     * Integer8 is also known as Microsoft Filetime format
+     * Commonly used when importing AD user's date fields such as expiration date
+     */
+    int8ToGlideDateTime: function(int8Date) {
+        return GlideSystemDateUtil.filetimeToGlideDateTime(int8Date);
+    },
+
+    /**
+     * Convert milliseconds to GlideDateTime...client usage below:
+     *
+     * var ga = new GlideAjax('DateTimeUtils');
+     * ga.addParam('sysparm_name','msToGlideDateTime');
+     * ga.addParam('sysparm_value', MILLISECONDSVALUE);
+     * ga.getXMLWait();
+     * var newGDT = ga.getAnswer();
+     *
+     * newGDT is your newly converted GlideDateTime
+     */
+    msToGlideDateTime: function() {
+        var ms = this.getValue();
+        var gDate = new GlideDateTime();
+        gDate.setValue(parseInt(ms, 10));
+        return gDate;
+    },
+
+    formatCalendarDate: function() {
+        // applies a correction since the time the calendar may be sending us may be off by an hour
+        // it includes the DST correction for NOW, but the date in question may not need a DST correction
+        var d = GlideStringUtil.parseLong(this.getValue());
+        var gDate = new GlideDateTime();
+        var offsetNow = gDate.getTZOffset();
+        gDate.setNumericValue(d);
+        var offsetDate = gDate.getTZOffset();
+        gDate.setNumericValue(d + (offsetNow - offsetDate));
+        return gDate.getDisplayValue();
+    },
+
+    /**
+     * Given a GlideDateTime get the first day of that week, used for time cards to set first day of the time card period
+     * defaults to Sunday, can override by providing second parameter (1=Monday, 7=Sunday)
+     *
+     *@returns GlideDate
+     */
+    getWeekStart: function( /*GlideDateTime*/ dt, /*int*/ firstDay) {
+        if (!firstDay || isNaN(firstDay))
+            firstDay = 7; //Sunday
+
+        if (firstDay < 1 || firstDay > 7)
+            firstDay = 7; //Sunday
+
+        var temp = new GlideDateTime(dt);
+        while (temp.getDayOfWeek() != firstDay) {
+            temp.addDays(-1);
+        }
+
+        return temp.getLocalDate();
+    }
+
+});]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>john.roberts</sys_created_by>
+        <sys_created_on>2009-10-09 18:49:15</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_id>3aa1185ec0a80a68523ad51b6fe97328</sys_id>
+        <sys_mod_count>41</sys_mod_count>
+        <sys_name>DateTimeUtils</sys_name>
+        <sys_package display_value="System (glidesoft)" source="glidesoft">8a2de332db311200b315f27eaf96194f</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="QuebecGlobal">9a7fd5611b817010ce0f62c3b24bcbd0</sys_scope>
+        <sys_update_name>sys_script_include_3aa1185ec0a80a68523ad51b6fe97328</sys_update_name>
+        <sys_updated_by>andrew.barnes@snc</sys_updated_by>
+        <sys_updated_on>2021-06-29 15:26:46</sys_updated_on>
+    </sys_script_include>
+    <sys_claim action="INSERT_OR_UPDATE">
+        <claim_owner_scope display_value="QuebecGlobal">9a7fd5611b817010ce0f62c3b24bcbd0</claim_owner_scope>
+        <claim_timestamp>17a586141ba0000001</claim_timestamp>
+        <metadata_update_name>sys_script_include_3aa1185ec0a80a68523ad51b6fe97328</metadata_update_name>
+        <previous_claim_app_version>1.0.0</previous_claim_app_version>
+        <previous_claim_name>QuebecGlobal</previous_claim_name>
+        <previous_claim_scope>9a7fd5611b817010ce0f62c3b24bcbd0</previous_claim_scope>
+        <sys_created_by>andrew.barnes@snc</sys_created_by>
+        <sys_created_on>2021-06-29 15:26:46</sys_created_on>
+        <sys_id>b5602da11b817010ce0f62c3b24bcb4a</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>andrew.barnes@snc</sys_updated_by>
+        <sys_updated_on>2021-06-29 15:26:46</sys_updated_on>
+    </sys_claim>
+</record_update>
